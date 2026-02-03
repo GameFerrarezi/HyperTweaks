@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper Tweaks | FPS Máximo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #050507;
+            --bg-card: rgba(20, 20, 25, 0.7);
+            --accent: #A020F0;
+            --accent-glow: #bc62ff;
+            --text-main: #ffffff;
+            --text-dim: #94949b;
+            --glass-border: rgba(160, 32, 240, 0.3);
+            --success: #00ffaa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        
+        body { background-color: var(--bg-deep); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+
+        /* --- BACKGROUND LOCAL --- */
+        .game-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: url('wallpaper.jpg') no-repeat center center/cover;
+            z-index: -2;
+            opacity: 0.15;
+            filter: grayscale(100%);
+        }
+
+        body::after {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #050507 0%, rgba(5,5,7,0.8) 50%, #050507 100%);
+            z-index: -1;
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 8%; position: fixed; width: 100%; z-index: 1000;
+            background: rgba(5, 5, 7, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; color: white; }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px var(--accent); }
+        .nav-links a { color: var(--text-dim); text-decoration: none; margin-left: 30px; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover { color: white; }
+        .btn-nav { background: var(--accent); color: white; padding: 8px 20px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 0.85rem; }
+
+        .hero { min-height: 100vh; display: flex; align-items: center; padding: 100px 8% 50px; gap: 50px; }
+        .hero-content { flex: 1; z-index: 2; }
+        
+        h1 { font-size: 4.8rem; font-weight: 900; line-height: 0.95; margin-bottom: 25px; text-transform: uppercase; font-style: italic; }
+        h1 span { 
+            -webkit-text-stroke: 2px var(--accent); color: transparent;
+            text-shadow: 0 0 30px rgba(160, 32, 240, 0.5);
+        }
+        
+        .subtitle { font-size: 1.2rem; color: #ccc; margin-bottom: 40px; max-width: 500px; text-shadow: 0 2px 10px black; }
+
+        .btn-main {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--accent); color: white; padding: 18px 45px; border-radius: 4px; 
+            font-size: 1.2rem; font-weight: 800; text-decoration: none; text-transform: uppercase;
+            box-shadow: 0 0 40px rgba(160, 32, 240, 0.4); border: 1px solid rgba(255,255,255,0.2);
+            transition: 0.3s; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(160, 32, 240, 0.8); background: white; color: black; }
+
+        .hero-image { flex: 1; position: relative; }
+        .app-frame {
+            border: 2px solid rgba(160, 32, 240, 0.5); background: #000; padding: 5px;
+            box-shadow: 0 0 100px rgba(160, 32, 240, 0.2); transform: skewY(-2deg);
+            transition: 0.5s;
+        }
+        .hero-image:hover .app-frame { transform: skewY(0) scale(1.02); border-color: var(--success); }
+        .app-frame img { width: 100%; display: block; opacity: 0.9; }
+
+        .benchmark-section { padding: 80px 8%; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); }
+        .bench-container { display: flex; gap: 50px; align-items: center; flex-wrap: wrap; }
+        .bench-text { flex: 1; }
+        .bench-text h2 { font-size: 3rem; margin-bottom: 10px; line-height: 1; }
+        .bench-graph { flex: 1.5; background: var(--bg-card); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border); }
+        
+        .bar-group { margin-bottom: 20px; }
+        .bar-label { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: 700; font-size: 0.9rem; }
+        .progress-bg { width: 100%; height: 25px; background: #222; border-radius: 4px; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-size: 0.8rem; font-weight: 800; color: black; }
+        
+        .fill-stock { width: 50%; background: #555; color: white; }
+        .fill-hyper { width: 85%; background: linear-gradient(90deg, var(--accent), var(--success)); box-shadow: 0 0 20px var(--accent); }
+
+        .games-section { padding: 100px 8%; text-align: center; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 50px; }
+        
+        .game-card {
+            height: 300px; border-radius: 12px; overflow: hidden; position: relative;
+            border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
+            background: #111;
+        }
+        .game-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; opacity: 0.6; }
+        .game-card:hover img { transform: scale(1.1); opacity: 1; }
+        .game-card:hover { border-color: var(--accent); box-shadow: 0 10px 40px rgba(160, 32, 240, 0.3); }
+        
+        .game-title {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
+            background: linear-gradient(to top, black, transparent);
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .features { padding: 100px 8%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .f-card {
+            background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .f-card:hover { transform: translateY(-10px); background: rgba(160,32,240,0.05); border-color: var(--accent); }
+        .f-card h3 { font-size: 1.5rem; margin-bottom: 10px; color: white; }
+        .f-card p { color: var(--text-dim); }
+        .f-icon { font-size: 2.5rem; margin-bottom: 20px; color: var(--accent); text-shadow: 0 0 20px var(--accent); }
+
+        .cta-box { text-align: center; padding: 150px 0; background: radial-gradient(circle, rgba(160, 32, 240, 0.1) 0%, transparent 70%); }
+        footer { text-align: center; padding: 50px; border-top: 1px solid rgba(255,255,255,0.05); color: #555; font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 150px; }
+            h1 { font-size: 3.5rem; }
+            .bench-container { flex-direction: column; }
+            nav .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-bg"></div>
+
+    <nav>
+        <div class="logo">HYPER<span>TWEAKS</span></div>
+        <div class="nav-links">
+            <a href="#benchmark">Benchmarks</a>
+            <a href="#games">Jogos Suportados</a>
+            <a href="COLE_O_LINK_AQUI" class="btn-nav">COMPRAR</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div style="color: var(--success); font-weight: 800; letter-spacing: 2px; margin-bottom: 10px;">🟢 ONLINE E INDETECTÁVEL</div>
+            <h1>DESBLOQUEIE<br><span>SEU POTENCIAL</span></h1>
+            <p class="subtitle">
+                Aumente seu FPS, reduza o Input Lag e force Hz personalizados no seu monitor. A ferramenta essencial para quem joga competitivo.
+            </p>
+            <a href="COLE_O_LINK_AQUI" class="btn-main">COMPRAR</a>
+        </div>
+
+        <div class="hero-image">
+            <div class="app-frame">
+                <img src="print.png" alt="Hyper Tweaks App">
+            </div>
+        </div>
+    </section>
+
+    <section class="benchmark-section" id="benchmark">
+        <div class="bench-container">
+            <div class="bench-text">
+                <h2>RESULTADOS<br><span>REAIS</span></h2>
+                <p style="color: #ccc; margin-bottom: 20px;">Testes realizados em Hardware intermediário (RTX 3060 + Ryzen 5).</p>
+                <div style="display: flex; gap: 30px;">
+                    <div>
+                        <h3 style="font-size: 2.5rem; color: white;">+40%</h3>
+                        <p style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Média de FPS</p>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 2.5rem; color: var(--success);">-15ms</h3>
+                        <p style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Latência</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bench-graph">
+                <div class="bar-group">
+                    <div class="bar-label"><span>Valorant (1080p Low)</span> <span>Stock: 240 FPS</span></div>
+                    <div class="progress-bg"><div class="progress-fill fill-stock">240 FPS</div></div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label"><span style="color: var(--accent);">Com Hyper Tweaks</span> <span style="color: var(--success);">380 FPS</span></div>
+                    <div class="progress-bg"><div class="progress-fill fill-hyper" style="width: 90%;">380 FPS 🚀</div></div>
+                </div>
+                <div style="margin: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);"></div>
+                <div class="bar-group">
+                    <div class="bar-label"><span>Call of Duty: Warzone</span> <span>Stock: 90 FPS</span></div>
+                    <div class="progress-bg"><div class="progress-fill fill-stock" style="width: 40%;">90 FPS</div></div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label"><span style="color: var(--accent);">Com Hyper Tweaks</span> <span style="color: var(--success);">135 FPS</span></div>
+                    <div class="progress-bg"><div class="progress-fill fill-hyper" style="width: 65%;">135 FPS 🚀</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="games-section" id="games">
+        <h2 style="font-size: 2.5rem; margin-bottom: 10px;">OTIMIZADO PARA OS <span style="color: var(--accent);">GIGANTES</span></h2>
+        <p style="color: #888; margin-bottom: 40px;">Perfís prontos para os jogos mais competitivos do mercado.</p>
+        
+        <div class="games-grid">
+            <div class="game-card">
+                <img src="valorant.jpg" alt="Valorant">
+                <div class="game-title">VALORANT</div>
+            </div>
+            <div class="game-card">
+                <img src="cs2.jpg" alt="CS2">
+                <div class="game-title">CS2</div>
+            </div>
+            <div class="game-card">
+                <img src="warzone.jpg" alt="Warzone">
+                <div class="game-title">WARZONE</div>
+            </div>
+            <div class="game-card">
+                <img src="fortnite.jpg" alt="Fortnite">
+                <div class="game-title">FORTNITE</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="f-card">
+            <div class="f-icon">⚙️</div>
+            <h3>Otimização de Kernel</h3>
+            <p>Ajustes profundos no registro do Windows que reduzem o atraso do sistema operacional.</p>
+        </div>
+        <div class="f-card">
+            <div class="f-icon">🖥️</div>
+            <h3>Monitor Overclock</h3>
+            <p>Force resoluções personalizadas e extraia Hz extras do seu painel com segurança.</p>
+        </div>
+        <div class="f-card">
+            <div class="f-icon">🧊</div>
+            <h3>Cooler & Energia</h3>
+            <p>Gerenciamento térmico inteligente para evitar throttling durante partidas longas.</p>
+        </div>
+    </section>
+
+    <div class="cta-box">
+        <h2 style="font-size: 3rem; margin-bottom: 20px;">PRONTO PARA O GLOBAL?</h2>
+        <a href="COLE_O_LINK_AQUI" class="btn-main">BAIXAR VERSÃO V1.8</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Hyper Tweaks Project. Built for Gamers.</p>
+    </footer>
+
+</body>
+</html>
