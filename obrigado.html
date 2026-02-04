@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper Tweaks | Pedido Confirmado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- ESTILO GLOBAL (Igual ao Index) --- */
+        :root {
+            --bg-deep: #050507;
+            --bg-card: rgba(20, 20, 25, 0.7);
+            --accent: #A020F0;
+            --accent-glow: #bc62ff;
+            --text-main: #ffffff;
+            --text-dim: #94949b;
+            --glass-border: rgba(160, 32, 240, 0.3);
+            --success: #00ffaa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--text-main); line-height: 1.6; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Fundo */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(160, 32, 240, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Nav Simplificada */
+        nav {
+            padding: 20px 8%; display: flex; justify-content: center;
+            background: rgba(5, 5, 7, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px var(--accent); }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .success-container {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 50px 20px; text-align: center;
+        }
+
+        .success-card {
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            padding: 60px 40px; border-radius: 24px; max-width: 600px; width: 100%;
+            backdrop-filter: blur(10px); box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            position: relative; overflow: hidden;
+        }
+
+        /* Luz de fundo no card */
+        .success-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+        }
+
+        /* Ícone Animado */
+        .icon-circle {
+            width: 80px; height: 80px; background: rgba(0, 255, 170, 0.1);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 30px; border: 2px solid var(--success);
+            box-shadow: 0 0 30px rgba(0, 255, 170, 0.2);
+            animation: pulse 2s infinite;
+        }
+        .check-icon { font-size: 2.5rem; color: var(--success); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 170, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 255, 170, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 170, 0); }
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 15px; line-height: 1.1; }
+        p { color: var(--text-dim); font-size: 1rem; margin-bottom: 30px; }
+
+        /* Caixas de Informação */
+        .info-box {
+            background: rgba(255,255,255,0.03); border-radius: 12px;
+            padding: 20px; margin-bottom: 30px; text-align: left;
+            border-left: 3px solid var(--accent);
+        }
+        .info-title { color: white; font-weight: 700; margin-bottom: 5px; display: block; font-size: 0.9rem; }
+        .info-desc { font-size: 0.85rem; color: #aaa; margin: 0; }
+
+        .btn-home {
+            display: inline-block; background: transparent; border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 15px 40px; border-radius: 8px; font-weight: 700;
+            text-decoration: none; transition: 0.3s; width: 100%;
+        }
+        .btn-home:hover { background: white; color: black; border-color: white; }
+        
+        .discord-link {
+            display: block; margin-top: 20px; color: var(--accent); font-size: 0.9rem;
+            text-decoration: none; font-weight: 600;
+        }
+        .discord-link:hover { text-decoration: underline; color: var(--accent-glow); }
+
+        footer { padding: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; color: #444; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">HYPER<span>TWEAKS</span></div>
+    </nav>
+
+    <div class="success-container">
+        <div class="success-card">
+            <div class="icon-circle">
+                <span class="check-icon">✔</span>
+            </div>
+
+            <h1>PEDIDO RECEBIDO!</h1>
+            <p>Agradecemos por escolher o Hyper Tweaks. Você está a um passo da performance máxima.</p>
+
+            <div class="info-box">
+                <span class="info-title">💳 Pagou via Cartão ou PIX?</span>
+                <p class="info-desc">Verifique seu e-mail agora. O link de download e suas instruções de acesso foram enviados para lá instantaneamente.</p>
+            </div>
+
+            <div class="info-box" style="border-left-color: #ffaa00;">
+                <span class="info-title" style="color: #ffaa00;">📄 Pagou via Boleto?</span>
+                <p class="info-desc">Seu pedido está reservado. O acesso será liberado automaticamente no seu e-mail assim que o banco compensar o pagamento (1 a 3 dias úteis).</p>
+            </div>
+
+            <a href="index.html" class="btn-home">VOLTAR AO INÍCIO</a>
+            
+            <a href="#" class="https://discord.gg/haQaxFgY">Precisa de ajuda? Entre no nosso Discord</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Hyper Tweaks Project. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
