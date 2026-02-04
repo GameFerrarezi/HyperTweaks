@@ -15,6 +15,7 @@
             --text-dim: #94949b;
             --glass-border: rgba(160, 32, 240, 0.3);
             --success: #00ffaa;
+            --pix-color: #32bcad; /* Cor específica bonita para o PIX */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
@@ -46,7 +47,7 @@
         .logo span { color: var(--accent); text-shadow: 0 0 15px var(--accent); }
         .nav-links a { color: var(--text-dim); text-decoration: none; margin-left: 30px; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover { color: white; }
-        .btn-nav { background: var(--accent); color: white; padding: 8px 20px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 0.85rem; }
+        .btn-nav { background: var(--accent); color: white; padding: 8px 20px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 0.85rem; cursor: pointer; }
 
         .hero { min-height: 100vh; display: flex; align-items: center; padding: 100px 8% 50px; gap: 50px; }
         .hero-content { flex: 1; z-index: 2; }
@@ -65,6 +66,7 @@
             font-size: 1.2rem; font-weight: 800; text-decoration: none; text-transform: uppercase;
             box-shadow: 0 0 40px rgba(160, 32, 240, 0.4); border: 1px solid rgba(255,255,255,0.2);
             transition: 0.3s; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            cursor: pointer;
         }
         .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(160, 32, 240, 0.8); background: white; color: black; }
 
@@ -128,6 +130,83 @@
             .bench-container { flex-direction: column; }
             nav .nav-links { display: none; }
         }
+
+        /* --- ESTILO DO MODAL DE PAGAMENTO --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none; /* Começa escondido */
+            justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+
+        .modal-active {
+            display: flex; opacity: 1;
+        }
+
+        .payment-box {
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid var(--accent);
+            padding: 40px; border-radius: 20px;
+            width: 90%; max-width: 450px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(160, 32, 240, 0.3);
+            position: relative;
+            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-active .payment-box {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute; top: 15px; right: 20px;
+            background: none; border: none; color: #666;
+            font-size: 1.5rem; cursor: pointer; transition: 0.3s;
+        }
+        .close-modal:hover { color: white; }
+
+        .modal-title {
+            font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; color: white;
+            text-transform: uppercase;
+        }
+        .modal-subtitle {
+            color: var(--text-dim); margin-bottom: 30px; font-size: 0.9rem;
+        }
+
+        .pay-btn {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            width: 100%; padding: 18px; margin-bottom: 15px;
+            border-radius: 12px; text-decoration: none;
+            font-weight: 800; font-size: 1.1rem; text-transform: uppercase;
+            transition: 0.3s; border: 1px solid transparent;
+        }
+
+        /* Botão PIX */
+        .btn-pix {
+            background: rgba(50, 188, 173, 0.1); color: var(--pix-color);
+            border-color: rgba(50, 188, 173, 0.3);
+        }
+        .btn-pix:hover {
+            background: var(--pix-color); color: #000;
+            box-shadow: 0 0 30px rgba(50, 188, 173, 0.4);
+        }
+
+        /* Botão Cartão */
+        .btn-card {
+            background: rgba(160, 32, 240, 0.1); color: var(--accent);
+            border-color: rgba(160, 32, 240, 0.3);
+        }
+        .btn-card:hover {
+            background: var(--accent); color: white;
+            box-shadow: 0 0 30px rgba(160, 32, 240, 0.4);
+        }
+
+        .secure-badge {
+            margin-top: 20px; font-size: 0.75rem; color: #555; display: flex; 
+            justify-content: center; align-items: center; gap: 5px;
+        }
     </style>
 </head>
 <body>
@@ -139,7 +218,7 @@
         <div class="nav-links">
             <a href="#benchmark">Benchmarks</a>
             <a href="#games">Jogos Suportados</a>
-            <a href="https://gameferrarezi.gumroad.com/l/hypertweaks" class="btn-nav">COMPRAR</a>
+            <a href="#" class="btn-nav open-modal">COMPRAR</a>
         </div>
     </nav>
 
@@ -150,7 +229,7 @@
             <p class="subtitle">
                 Aumente seu FPS, reduza o Input Lag e force Hz personalizados no seu monitor. A ferramenta essencial para quem joga competitivo.
             </p>
-            <a href="https://gameferrarezi.gumroad.com/l/hypertweaks" class="btn-main">COMPRAR</a>
+            <a href="#" class="btn-main open-modal">COMPRAR</a>
         </div>
 
         <div class="hero-image">
@@ -243,13 +322,59 @@
 
     <div class="cta-box">
         <h2 style="font-size: 3rem; margin-bottom: 20px;">PRONTO PARA O GLOBAL?</h2>
-        <a href="https://gameferrarezi.gumroad.com/l/hypertweaks" class="btn-main">BAIXAR VERSÃO V1.8</a>
+        <a href="#" class="btn-main open-modal">BAIXAR VERSÃO V1.8</a>
     </div>
 
     <footer>
         <p>&copy; 2026 Hyper Tweaks Project. Built for Gamers.</p>
     </footer>
 
-</body>
+    <div class="modal-overlay" id="paymentModal">
+        <div class="payment-box">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <h2 class="modal-title">ESCOLHA O MÉTODO</h2>
+            <p class="modal-subtitle">Liberação imediata do software após confirmação.</p>
 
+            <a href="SEU_LINK_DO_PIX_AQUI" class="pay-btn btn-pix">
+                💠 PAGAR COM PIX
+            </a>
+
+            <a href="https://gameferrarezi.gumroad.com/l/hypertweaks" class="pay-btn btn-card">
+                💳 PAGAR COM CARTÃO
+            </a>
+
+            <div class="secure-badge">
+                🔒 Pagamento 100% Seguro e Criptografado
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pega os elementos
+        const modal = document.getElementById('paymentModal');
+        const closeBtn = document.getElementById('closeModal');
+        const openBtns = document.querySelectorAll('.open-modal');
+
+        // Função para abrir
+        openBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault(); // Impede o link de carregar
+                modal.classList.add('modal-active');
+            });
+        });
+
+        // Função para fechar (botão X)
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('modal-active');
+        });
+
+        // Fechar se clicar fora da caixa (no fundo escuro)
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('modal-active');
+            }
+        });
+    </script>
+
+</body>
 </html>
